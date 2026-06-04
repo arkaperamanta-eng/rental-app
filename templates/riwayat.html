@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Riwayat - Rental App{% endblock %}
+
+{% block content %}
+  <h2>Riwayat Rental</h2>
+  <p class="muted">Riwayat rental milik akun Anda.</p>
+
+  {% if rentals and rentals|length > 0 %}
+    <div style="margin-top:12px;">
+      <table class="table" cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Aset</th>
+            <th>Tanggal</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rentals %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.aset }}</td>
+              <td>{{ r.tanggal_mulai.strftime('%Y-%m-%d') }} - {{ r.tanggal_selesai.strftime('%Y-%m-%d') }}</td>
+              <td>
+                {% if r.status == 'aktif' %}
+                  <span class="badge badge-success">aktif</span>
+                {% else %}
+                  <span class="badge badge-warning">selesai</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state" style="margin-top:12px;">
+      Belum ada data
+    </div>
+  {% endif %}
+{% endblock %}
+

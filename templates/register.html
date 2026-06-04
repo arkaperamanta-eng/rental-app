@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Register - Rental App{% endblock %}
+
+{% block content %}
+  <h2>Register</h2>
+  <p class="muted" style="margin-top:0">Buat akun untuk mulai menyewa aset.</p>
+
+  <form method="post" class="row" style="margin-top:12px;">
+    <div style="flex:2">
+      <label>Username</label>
+      <div class="field">
+        <input name="username" placeholder="username" required />
+      </div>
+    </div>
+
+    <div style="flex:2">
+      <label>Password</label>
+      <div class="field">
+        <input type="password" name="password" placeholder="password" required />
+      </div>
+    </div>
+
+    <div style="flex:1">
+      <label>&nbsp;</label>
+      <div class="field" style="margin-top:18px">
+        <button type="submit" class="btn btn-primary">Daftar</button>
+      </div>
+    </div>
+  </form>
+
+  <p style="margin-top:14px">Sudah punya akun? <a href="{{ url_for('login') }}" class="btn btn-ghost">Login</a></p>
+{% endblock %}
+

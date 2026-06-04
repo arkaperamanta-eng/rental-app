@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}User - Rental App{% endblock %}
+
+{% block content %}
+  <h2>Halaman User</h2>
+  <p class="muted">Sewa aset dan pantau statusnya di satu tempat.</p>
+
+  <div style="margin-top:12px; padding:14px; background:#fafafa; border-radius:14px; border:1px solid var(--border);">
+    <h3 style="margin:0 0 10px 0">Form Sewa (Tambah Rental)</h3>
+
+    <form method="post" action="{{ url_for('user_rentals_add') }}" class="row" style="margin-top:6px;">
+      <div style="flex:2">
+        <label>Barang yang tersedia</label>
+        <div class="field">
+          <select name="item_id" required>
+            {% if items and items|length > 0 %}
+              {% for it in items %}
+                <option value="{{ it.id }}">{{ it.nama_aset }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+      </div>
+
+      <div style="flex:2">
+        <label>Tanggal Mulai</label>
+        <div class="field"><input type="date" name="tanggal_mulai" required /></div>
+      </div>
+
+      <div style="flex:2">
+        <label>Tanggal Selesai</label>
+        <div class="field"><input type="date" name="tanggal_selesai" required /></div>
+      </div>
+
+      <div style="flex:1">
+        <label>Status</label>
+        <div class="field">
+          <select name="status">
+            <option value="aktif" selected>aktif</option>
+            <option value="selesai">selesai</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="flex:1">
+        <label>&nbsp;</label>
+        <div class="field" style="margin-top:18px;">
+          <button type="submit" class="btn btn-primary" {% if not items or items|length == 0 %}disabled{% endif %}>Sewa</button>
+        </div>
+      </div>
+    </form>
+
+
+    <div style="margin-top:10px">
+      <a href="{{ url_for('riwayat') }}" class="btn btn-ghost" style="padding:8px 12px;">Lihat riwayat</a>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">Rental Anda</h3>
+
+  {% if rentals and rentals|length > 0 %}
+    <div style="margin-top:12px;">
+      <table class="table" cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Aset</th>
+            <th>Tanggal</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rentals %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.aset }}</td>
+              <td>{{ r.tanggal_mulai.strftime('%Y-%m-%d') }} - {{ r.tanggal_selesai.strftime('%Y-%m-%d') }}</td>
+              <td>
+                {% if r.status == 'aktif' %}
+                  <span class="badge badge-success">aktif</span>
+                {% else %}
+                  <span class="badge badge-warning">selesai</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state" style="margin-top:12px;">
+      Belum ada rental
+    </div>
+  {% endif %}
+{% endblock %}
+
