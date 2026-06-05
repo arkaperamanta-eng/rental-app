@@ -1,12 +1,17 @@
 from datetime import datetime
+import os
+import time
+import uuid
 
 from flask import Flask, redirect, render_template, request, url_for, flash
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 from config import Config
 from database.init_db import init_db, register_models
+
 
 
 
@@ -188,22 +193,63 @@ def admin_items_add():
         return redirect(url_for("user"))
 
     nama_aset = (request.form.get("nama_aset") or "").strip()
+    harga_str = (request.form.get("harga") or "").strip()
     is_active_str = (request.form.get("is_active") or "true").strip().lower()
 
     if not nama_aset:
         flash("Nama aset wajib diisi.", "error")
         return redirect(url_for("admin_items"))
 
+    if not harga_str:
+        flash("Harga wajib diisi.", "error")
+        return redirect(url_for("admin_items"))
+
+    try:
+        harga = float(harga_str)
+    except ValueError:
+        flash("Harga harus angka.", "error")
+        return redirect(url_for("admin_items"))
+
     is_active = is_active_str in ["1", "true", "yes", "y"]
+
+    # Foto wajib saat tambah/update
+    file = request.files.get("foto")
+    if not file or file.filename == "":
+        flash("Foto wajib diupload.", "error")
+        return redirect(url_for("admin_items"))
+
+    allowed_ext = {"jpg", "jpeg", "png", "webp", "gif"}
+    ext = (file.filename.rsplit(".", 1)[-1] if "." in file.filename else "").lower()
+    if ext not in allowed_ext:
+        flash("Ekstensi foto tidak valid. Gunakan jpg/jpeg/png/webp/gif.", "error")
+        return redirect(url_for("admin_items"))
+
+    # Pastikan folder upload ada (static/images/)
+    base_dir = app.root_path
+    upload_dir = os.path.join(base_dir, "static", "images")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # Nama file unik
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    safe_name = "".join([c for c in nama_aset if c.isalnum() or c in ("-", "_")]).strip()[:40]
+    if not safe_name:
+        safe_name = "item"
+    filename = f"{safe_name}_{timestamp}.{ext}"
 
     existing = InventoryItem.query.filter_by(nama_aset=nama_aset).first()
     if existing:
+        existing.harga = harga
         existing.is_active = is_active
+        # update foto juga
+        file.save(os.path.join(upload_dir, filename))
+        existing.foto = filename
         db.session.commit()
-        flash("Item sudah ada. Status diupdate.", "success")
+        flash("Item sudah ada. Harga & foto diupdate.", "success")
         return redirect(url_for("admin_items"))
 
-    item = InventoryItem(nama_aset=nama_aset, is_active=is_active)
+    item = InventoryItem(nama_aset=nama_aset, harga=harga, is_active=is_active)
+    file.save(os.path.join(upload_dir, filename))
+    item.foto = filename
     db.session.add(item)
     db.session.commit()
     flash("Item berhasil ditambahkan.", "success")
@@ -297,6 +343,8 @@ def user_rentals_add():
     rental = Rental(
         item_id=item.id,
         aset=item.nama_aset,
+        harga=item.harga,
+        foto=item.foto,
         tanggal_mulai=tanggal_mulai,
         tanggal_selesai=tanggal_selesai,
         status=status,

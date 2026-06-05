@@ -12,15 +12,59 @@
       <div style="flex:2">
         <label>Barang yang tersedia</label>
         <div class="field">
-          <select name="item_id" required>
+          <select name="item_id" required id="item_id_select">
             {% if items and items|length > 0 %}
               {% for it in items %}
-                <option value="{{ it.id }}">{{ it.nama_aset }}</option>
+                <option value="{{ it.id }}" data-foto="{{ it.foto or '' }}">{{ it.nama_aset }} (Rp {{ '%.2f'|format(it.harga) }})</option>
               {% endfor %}
             {% endif %}
           </select>
         </div>
       </div>
+
+      <div style="flex:1; min-width:160px;">
+        <label>Foto yang akan disewa</label>
+        <div class="field" style="margin-top:6px;">
+          <img
+            id="item_foto_preview"
+            src=""
+            alt="preview"
+            style="width:140px; height:90px; object-fit:cover; border-radius:10px; border:1px solid var(--border); display:none;" />
+          <div id="item_foto_placeholder" class="muted" style="margin-top:6px; display:block;">Pilih barang</div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const selectEl = document.getElementById('item_id_select');
+          const imgEl = document.getElementById('item_foto_preview');
+          const placeholderEl = document.getElementById('item_foto_placeholder');
+          if (!selectEl || !imgEl || !placeholderEl) return;
+
+          function setPreviewFromOption(opt) {
+            const foto = (opt && opt.getAttribute('data-foto')) ? opt.getAttribute('data-foto') : '';
+            if (foto) {
+              imgEl.src = '/static/images/' + foto;
+              imgEl.style.display = 'block';
+              placeholderEl.style.display = 'none';
+            } else {
+              imgEl.src = '';
+              imgEl.style.display = 'none';
+              placeholderEl.style.display = 'block';
+            }
+          }
+
+          selectEl.addEventListener('change', function () {
+            const opt = selectEl.options[selectEl.selectedIndex];
+            setPreviewFromOption(opt);
+          });
+
+          // init preview on load (if browser restores selection)
+          const opt = selectEl.options[selectEl.selectedIndex];
+          setPreviewFromOption(opt);
+        })();
+      </script>
+
 
       <div style="flex:2">
         <label>Tanggal Mulai</label>
@@ -64,6 +108,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Gambar</th>
             <th>Aset</th>
             <th>Tanggal</th>
             <th>Status</th>
@@ -73,6 +118,16 @@
           {% for r in rentals %}
             <tr>
               <td>{{ r.id }}</td>
+              <td style="width:120px;">
+                {% if r.foto %}
+                  <img
+                    src="{{ url_for('static', filename='images/' ~ r.foto) }}"
+                    alt="{{ r.aset }}"
+                    style="width:90px; height:60px; object-fit:cover; border-radius:10px; border:1px solid var(--border);" />
+                {% else %}
+                  <span class="muted">-</span>
+                {% endif %}
+              </td>
               <td>{{ r.aset }}</td>
               <td>{{ r.tanggal_mulai.strftime('%Y-%m-%d') }} - {{ r.tanggal_selesai.strftime('%Y-%m-%d') }}</td>
               <td>

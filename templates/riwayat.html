@@ -11,6 +11,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Gambar</th>
             <th>Aset</th>
             <th>Tanggal</th>
             <th>Status</th>
@@ -20,6 +21,16 @@
           {% for r in rentals %}
             <tr>
               <td>{{ r.id }}</td>
+              <td style="width:120px;">
+                {% if r.foto %}
+                  <img
+                    src="{{ url_for('static', filename='images/' ~ r.foto) }}"
+                    alt="{{ r.aset }}"
+                    style="width:90px; height:60px; object-fit:cover; border-radius:10px; border:1px solid var(--border);" />
+                {% else %}
+                  <span class="muted">-</span>
+                {% endif %}
+              </td>
               <td>{{ r.aset }}</td>
               <td>{{ r.tanggal_mulai.strftime('%Y-%m-%d') }} - {{ r.tanggal_selesai.strftime('%Y-%m-%d') }}</td>
               <td>

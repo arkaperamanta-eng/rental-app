@@ -70,7 +70,7 @@
       <h3>Daftar Barang</h3>
 
       <h4 style="margin-top:18px">Tambah / Update Barang</h4>
-      <form method="post" action="{{ url_for('admin_items_add') }}" style="margin-top:12px;">
+      <form method="post" action="{{ url_for('admin_items_add') }}" style="margin-top:12px;" enctype="multipart/form-data">
         <div class="row">
           <div style="flex:2;">
             <label>Nama Aset</label>
@@ -84,6 +84,31 @@
                 <option value="true" selected>aktif</option>
                 <option value="false">tidak aktif</option>
               </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <div class="row">
+            <div style="flex:1.2;">
+              <label>Harga</label>
+            <div class="field">
+              <input
+                name="harga"
+                type="text"
+                placeholder="contoh: 125000AB"
+                required
+oninput="this.value = this.value.replace(/[^0-9a-zA-Z\s_-]/g, '')"
+              <div class="muted" style="font-size:12px; margin-top:4px;">
+                Boleh ketik angka dan huruf. Pastikan nilainya tetap bisa diproses menjadi angka saat disimpan.
+              </div>
+            </div>
+
+            </div>
+
+            <div style="flex:1.8;">
+              <label>Foto (wajib)</label>
+              <div class="field"><input name="foto" type="file" accept="image/*" required /></div>
             </div>
           </div>
         </div>
