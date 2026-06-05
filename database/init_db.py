@@ -54,8 +54,16 @@ def register_models(db):
 
         id = db.Column(db.Integer, primary_key=True)
         nama_aset = db.Column(db.String(120), nullable=False, unique=True)
+
+        # harga barang (untuk ditampilkan & disimpan snapshot saat rental dibuat)
+        harga = db.Column(db.Numeric(10, 2), nullable=False, default=0)
+
+        # nama file foto (mis: uuid.jpg) disimpan di static/images/
+        foto = db.Column(db.String(255), nullable=True)
+
         is_active = db.Column(db.Boolean, nullable=False, default=True)
         created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 
     class Rental(db.Model):
         __tablename__ = "rentals"
@@ -68,6 +76,9 @@ def register_models(db):
         # snapshot nama aset saat rental dibuat (supaya historinya tetap jelas meski nama/item dinonaktifkan)
         aset = db.Column(db.String(120), nullable=False)
 
+        # snapshot harga dan foto saat rental dibuat
+        harga = db.Column(db.Numeric(10, 2), nullable=False, default=0)
+        foto = db.Column(db.String(255), nullable=True)
 
         tanggal_mulai = db.Column(db.DateTime, nullable=False)
         tanggal_selesai = db.Column(db.DateTime, nullable=False)
@@ -78,6 +89,7 @@ def register_models(db):
 
         user = db.relationship("User", back_populates="rentals")
         item = db.relationship("InventoryItem")
+
 
     return User, InventoryItem, Rental
 

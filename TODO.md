@@ -1,11 +1,29 @@
-# TODO
+# TODO - Harga Barang & Foto
 
-## Perbaikan: Halaman Kelola Rental error
-- [x] Identifikasi error: `sqlite3.OperationalError: no such column rentals.item_id` saat akses `/admin/rentals`.
-- [x] Perbarui skema database agar tabel `rentals` punya kolom `item_id`.
+## Step 1
+- [x] Analisis struktur app.py, database/init_db.py, templates/admin.html, templates/user.html
 
-- [ ] Pastikan perintah migrasi/refresh dijalankan tanpa merusak model.
-- [x] Tes halaman `/admin/rentals` dan `/admin/items`.
-- [ ] Tes penambahan rental dari halaman user (`/user`).
+## Step 2
+- [x] Update model `InventoryItem` untuk menambah `harga` dan `foto`
 
+
+## Step 3
+- [ ] Update model `Rental` agar menyimpan snapshot `harga` dan `foto` saat rental dibuat
+
+
+## Step 4
+- [ ] Update routing/logic di `app.py`:
+  - [ ] Tambah konfigurasi upload
+  - [ ] Proses input harga & upload foto di `/admin/items/add`
+  - [ ] Proses simpan `harga` & `foto` snapshot ke `Rental` pada `/user/rentals/add`
+
+## Step 5
+- [ ] Update templates:
+  - [ ] `templates/admin.html` (form + tabel barang: harga & preview foto)
+  - [ ] `templates/user.html` (tabel rental: harga & foto)
+
+## Step 6
+- [ ] Jalankan app & verifikasi end-to-end:
+  - [ ] Admin tambah barang dengan harga & foto
+  - [ ] User sewa dan lihat harga & foto di daftar rental
 
