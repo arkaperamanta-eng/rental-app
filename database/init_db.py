@@ -25,17 +25,17 @@ def init_db(db):
 def register_models(db):
     """Register ORM models on the provided SQLAlchemy instance.
 
-    This must be called once after `db = SQLAlchemy(app)` is created.
+    Must be called once after `db = SQLAlchemy(app)` is created.
+
+    Side effect: assigns model classes to module globals so `app.py` can import them reliably.
 
     Returns: (User, InventoryItem, Rental)
     """
+
     global User, InventoryItem, Rental
 
-    # expose to module globals so app.py can reference User/InventoryItem/Rental
-    User, InventoryItem, Rental = None, None, None
-
-
     class User(db.Model, UserMixin):
+
 
         __tablename__ = "users"
 
@@ -91,10 +91,16 @@ def register_models(db):
         item = db.relationship("InventoryItem")
 
 
+    # Assign to module globals for external references.
+    globals()["User"] = User
+    globals()["InventoryItem"] = InventoryItem
+    globals()["Rental"] = Rental
+
     return User, InventoryItem, Rental
 
 
 def ensure_default_admin(db, User):
+
     """Create default admin account if it doesn't exist."""
     # Default admin: admin / admin123 (change in production)
     admin = User.query.filter_by(username="admin").first()

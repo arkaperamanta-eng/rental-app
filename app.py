@@ -320,20 +320,20 @@ def riwayat():
 
 
 def create_app():
-    # Ensure models from database/init_db.py are registered before creating tables.
-    register_models(db)
-
-    # Load model classes into module globals so other functions can use them.
-    from database import init_db as init_db_module
+    # Register models and bind them to app.py globals.
     global User, InventoryItem, Rental
-    User = init_db_module.User
-    InventoryItem = init_db_module.InventoryItem
-    Rental = init_db_module.Rental
+    User, InventoryItem, Rental = register_models(db)
 
     with app.app_context():
+        # If you change models, existing SQLite schema might be out-of-date.
+        # For development, we drop and recreate tables to prevent runtime errors like
+        # "no such column: rentals.harga".
+        # WARNING: This deletes existing data in app.db.
+        db.drop_all()
         init_db(db)
         ensure_default_admin()
     return app
+
 
 
 
