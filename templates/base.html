@@ -126,8 +126,29 @@
 
     label { font-weight: 600; font-size: 0.92rem; color: rgba(15, 23, 42, 0.88); }
 
+    /* Reusable UI helpers (reduce inline styles) */
+    .page-intro { margin-top: 0; }
+    .section-title { margin: 0 0 6px 0; font-size: 1.15rem; }
+    .section-subtitle { margin: 0 0 14px 0; color: var(--muted); }
+
+    .form-card {
+      margin-top: 12px;
+      padding: 14px;
+      background: #fafafa;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .mt-0 { margin-top: 0 !important; }
+    .mt-8 { margin-top: 8px !important; }
+    .mt-10 { margin-top: 10px !important; }
+    .mt-12 { margin-top: 12px !important; }
+    .mt-16 { margin-top: 16px !important; }
+    .mt-18 { margin-top: 18px !important; }
+
     input, select, textarea {
       padding: 10px 12px;
+
       border-radius: 12px;
       border: 1px solid #d1d5db;
       width: 100%;

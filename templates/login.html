@@ -2,10 +2,10 @@
 {% block title %}Login - Rental App{% endblock %}
 
 {% block content %}
-  <h2>Login</h2>
-  <p class="muted" style="margin-top:0">Masuk untuk mengelola rental Anda.</p>
+  <h2 class="section-title">Login</h2>
+  <p class="section-subtitle page-intro">Masuk untuk mengelola rental Anda.</p>
 
-  <form method="post" class="row" style="margin-top:12px;">
+  <form method="post" class="row">
     <div style="flex:2">
       <label>Username</label>
       <div class="field">
@@ -22,13 +22,15 @@
 
     <div style="flex:1">
       <label>&nbsp;</label>
-      <div class="field" style="margin-top:18px">
+      <div class="field mt-18">
         <button type="submit" class="btn btn-primary">Login</button>
       </div>
     </div>
   </form>
 
-  <p style="margin-top:14px">Belum punya akun? <a href="{{ url_for('register') }}" class="btn btn-ghost" style="padding:8px 12px;">Register</a></p>
+  <p style="margin-top:14px">Belum punya akun? <a href="{{ url_for('register') }}" class="btn btn-ghost">Register</a></p>
+
 {% endblock %}
+
 
 
